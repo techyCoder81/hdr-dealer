@@ -43,6 +43,7 @@ public class Main extends ListenerAdapter {
         }
         //System.out.println(event.getAuthor().getName() + ": " + event.getMessage().getContentDisplay());
         if (event.getMessage().getContentRaw().contentEquals("$ping")) {
+
             event.getChannel().sendMessage("Pong!").queue();
         }
     }
