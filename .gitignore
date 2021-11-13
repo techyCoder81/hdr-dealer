@@ -1,3 +1,4 @@
 /build/
 token.txt
 /.gradle/
+/bin/

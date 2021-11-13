@@ -1,12 +1,10 @@
-import net.dv8tion.jda.api.AccountType;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
+import output.DiscordClient;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-public class Main extends ListenerAdapter {
+import engine.CommandEngine;
+
+public class Main {
     public static void main(String[] args) {
         BufferedReader br = null;
         String token = null;
@@ -17,34 +15,26 @@ public class Main extends ListenerAdapter {
             System.out.println("Error: Could not read token file!");
             System.out.println(e.getMessage());
             return;
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (Exception e) {
+                    // all hope is lost for this file lmao
+                    System.out.println("exception while closing file!");
+                    e.printStackTrace();
+                }
+            }
         }
 
         if (token == null || token == "") {
             System.out.println("Error: token file was null or empty.");
             return;
         }
-        
-        JDABuilder builder = JDABuilder.createDefault(token);
-        builder.addEventListeners(new Main());
-        try {
-            builder.build();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return;
-        }
 
-    }
+        CommandEngine engine = new CommandEngine();
 
-    @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
-
-        if (event.getAuthor().isBot()) {
-            return;
-        }
-        //System.out.println(event.getAuthor().getName() + ": " + event.getMessage().getContentDisplay());
-        if (event.getMessage().getContentRaw().contentEquals("$ping")) {
-
-            event.getChannel().sendMessage("Pong!").queue();
-        }
+        @SuppressWarnings("unused")
+        DiscordClient discordClient = new DiscordClient(token, engine);
     }
 }
