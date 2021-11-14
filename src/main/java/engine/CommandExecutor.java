@@ -20,9 +20,10 @@ public class CommandExecutor implements Runnable {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         CommandRunnable runnable = new CommandRunnable(handler, args, consumer);
         Future<?> future = executor.submit(runnable);
+        int timeout = handler.getTimeout() != 0 ? handler.getTimeout() : 5000;
 
         try {
-            Object result = future.get(handler.getTimeout(), TimeUnit.MILLISECONDS);
+            Object result = future.get(timeout, TimeUnit.MILLISECONDS);
             // successful completion
         } catch (ExecutionException e) {
             e.printStackTrace();

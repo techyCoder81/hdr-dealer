@@ -2,7 +2,7 @@ package command.handlers;
 
 import response.ResponseConsumer;
 
-public class PingHandler implements CommandHandler {
+public class PingHandler extends CommandHandler {
 
     public PingHandler() {
         
@@ -13,11 +13,6 @@ public class PingHandler implements CommandHandler {
         // arguments dont matter lol its a ping
         consumer.simpleResponse("PONG!");
         
-    }
-
-    @Override
-    public int getTimeout() {
-        return 5000;
     }
 
     @Override

@@ -5,7 +5,7 @@ import response.ResponseConsumer;
 
 import java.util.Arrays;
 
-public class HelpHandler implements CommandHandler {
+public class HelpHandler extends CommandHandler {
     @Override
     public void handle(String[] args, ResponseConsumer consumer) {
         if (args.length == 0) {
@@ -34,11 +34,6 @@ public class HelpHandler implements CommandHandler {
             consumer.simpleResponse(getHelp());
         }
         return;
-    }
-
-    @Override
-    public int getTimeout() {
-        return 5000;
     }
 
     @Override

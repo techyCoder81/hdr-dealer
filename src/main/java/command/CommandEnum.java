@@ -6,6 +6,7 @@ public enum CommandEnum{
     PING("ping", PingHandler.class),
     LOOPBACK("loopback", LoopbackHandler.class),
     HELP("help", HelpHandler.class),
+    CRY("cry", CryHandler.class),
     INVALID("invalid", InvalidHandler.class);
 
 

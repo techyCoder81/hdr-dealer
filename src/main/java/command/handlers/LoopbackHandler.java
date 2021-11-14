@@ -2,7 +2,7 @@ package command.handlers;
 
 import response.ResponseConsumer;
 
-public class LoopbackHandler implements CommandHandler {
+public class LoopbackHandler extends CommandHandler {
 
     public LoopbackHandler() {
 
@@ -16,11 +16,6 @@ public class LoopbackHandler implements CommandHandler {
             builder.append(arg + " ");
         }
         consumer.simpleResponse(builder.toString());
-    }
-
-    @Override
-    public int getTimeout() {
-        return 5000;
     }
 
     @Override

@@ -14,20 +14,20 @@ public class ChannelConsumer implements ResponseConsumer {
     }
 
     @Override
-    public void simpleResponse(String response) {
+    public synchronized void simpleResponse(String response) {
         destinationChannel.sendMessage(response).queue();
         
     }
 
     @Override
-    public void pagedResponse(String description, Collection<String> data) {
+    public synchronized void pagedResponse(String description, Collection<String> data) {
         // TODO build response paging mechanism
         destinationChannel.sendMessage(description).queue();
         data.forEach(str -> destinationChannel.sendMessage(str).queue());
     }
 
     @Override
-    public void fileResponse(String description, File file) {
+    public synchronized void fileResponse(String description, File file) {
         destinationChannel.sendMessage(description).addFile(file).queue();
     }
 

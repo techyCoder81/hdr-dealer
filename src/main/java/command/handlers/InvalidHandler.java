@@ -2,7 +2,7 @@ package command.handlers;
 
 import response.ResponseConsumer;
 
-public class InvalidHandler implements CommandHandler {
+public class InvalidHandler extends CommandHandler {
 
     public InvalidHandler() {
 
@@ -11,11 +11,6 @@ public class InvalidHandler implements CommandHandler {
     @Override
     public void handle(String[] arguments, ResponseConsumer consumer) {
         consumer.simpleResponse("Invalid Command!");
-    }
-
-    @Override
-    public int getTimeout() {
-        return 5000;
     }
 
     @Override
