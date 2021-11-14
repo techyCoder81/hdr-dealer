@@ -1,6 +1,6 @@
 package command.handlers;
 
-import output.consumer.ResponseConsumer;
+import response.ResponseConsumer;
 
 public class LoopbackHandler implements CommandHandler {
 
@@ -15,7 +15,19 @@ public class LoopbackHandler implements CommandHandler {
         for (String arg : arguments) {
             builder.append(arg + " ");
         }
-        consumer.receiveResponse(builder.toString());
+        consumer.simpleResponse(builder.toString());
     }
-    
+
+    @Override
+    public int getTimeout() {
+        return 5000;
+    }
+
+    @Override
+    public String getHelp() {
+        return "This command simply returns whatever the original call was.\n" +
+                "Usage: `loopback <loopback_string>`\n" +
+                "Output: `loopback <loopback_string>`";
+    }
+
 }

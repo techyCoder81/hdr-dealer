@@ -1,11 +1,11 @@
-package output;
+package client;
 
 import command.CommandProducer;
 import engine.CommandEngine;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import output.consumer.DiscordResponseConsumer;
+import response.ChannelConsumer;
 
 public class DiscordClient extends ListenerAdapter implements CommandProducer {
     CommandEngine engine;
@@ -34,14 +34,15 @@ public class DiscordClient extends ListenerAdapter implements CommandProducer {
         if (event.getAuthor().isBot()) {
             return;
         }
-        //System.out.println(event.getAuthor().getName() + ": " + event.getMessage().getContentDisplay());
-        if (event.getMessage().getContentRaw().startsWith("$")) {
+
+        String text = event.getMessage().getContentDisplay();
+
+        if (text.startsWith("$")) {
 
             //event.getChannel().sendMessage("Pong!").queue();
-            DiscordResponseConsumer responseConsumer = new DiscordResponseConsumer(event.getChannel());
+            ChannelConsumer responseConsumer = new ChannelConsumer(event.getChannel());
             if (engine != null) {
-                engine.schedule(event.getMessage().getContentDisplay(), responseConsumer);
-                // TODO use a command object
+                engine.schedule(text.substring(1), responseConsumer);
             } else {
                 event.getChannel().sendMessage("ERROR: Engine was null for discordclient.").queue();
             }

@@ -3,9 +3,10 @@ package command;
 import command.handlers.*;
 
 public enum CommandEnum{
-    PING("$ping", PingHandler.class),
-    LOOPBACK("$loopback", LoopbackHandler.class),
-    NOT_FOUND(null, null);
+    PING("ping", PingHandler.class),
+    LOOPBACK("loopback", LoopbackHandler.class),
+    HELP("help", HelpHandler.class),
+    INVALID("invalid", InvalidHandler.class);
 
 
     String command;
@@ -30,7 +31,7 @@ public enum CommandEnum{
                 return entry;
             }
         }
-        return NOT_FOUND;
+        return INVALID;
     }
 
 }

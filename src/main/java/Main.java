@@ -1,7 +1,8 @@
-import output.DiscordClient;
+import client.DiscordClient;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
+import client.TerminalClient;
 import engine.CommandEngine;
 
 public class Main {
@@ -34,7 +35,7 @@ public class Main {
 
         CommandEngine engine = new CommandEngine();
 
-        @SuppressWarnings("unused")
-        DiscordClient discordClient = new DiscordClient(token, engine);
+        new DiscordClient(token, engine);
+        new TerminalClient(engine);
     }
 }

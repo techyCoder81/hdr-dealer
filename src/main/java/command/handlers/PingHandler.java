@@ -1,6 +1,6 @@
 package command.handlers;
 
-import output.consumer.ResponseConsumer;
+import response.ResponseConsumer;
 
 public class PingHandler implements CommandHandler {
 
@@ -11,8 +11,19 @@ public class PingHandler implements CommandHandler {
     @Override
     public void handle(String[] arguments, ResponseConsumer consumer) {
         // arguments dont matter lol its a ping
-        consumer.receiveResponse("PONG!");
+        consumer.simpleResponse("PONG!");
         
     }
-    
+
+    @Override
+    public int getTimeout() {
+        return 5000;
+    }
+
+    @Override
+    public String getHelp() {
+        return "This command returns `PONG!`\n" +
+                "Usage: `ping`\n" +
+                "Output: `PONG!`";
+    }
 }
