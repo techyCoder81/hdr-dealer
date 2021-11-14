@@ -21,7 +21,7 @@ public class ChannelConsumer implements ResponseConsumer {
 
     @Override
     public synchronized void pagedResponse(String description, Collection<String> data) {
-        // TODO build response paging mechanism
+        // TODO build response paging mechanism using an ExecutorService + Future<?>
         destinationChannel.sendMessage(description).queue();
         data.forEach(str -> destinationChannel.sendMessage(str).queue());
     }
