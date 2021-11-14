@@ -1,5 +1,6 @@
 package command.handlers;
 
+import response.CommandResponse;
 import response.ResponseConsumer;
 
 public class LoopbackHandler extends CommandHandler {
@@ -15,7 +16,9 @@ public class LoopbackHandler extends CommandHandler {
         for (String arg : arguments) {
             builder.append(arg + " ");
         }
-        consumer.simpleResponse(builder.toString());
+        consumer.receiveResponse(
+                new CommandResponse(builder.toString())
+        );
     }
 
     @Override

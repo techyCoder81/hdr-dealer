@@ -1,6 +1,7 @@
 package engine;
 
 import command.handlers.CommandHandler;
+import response.CommandResponse;
 import response.ResponseConsumer;
 
 import java.util.concurrent.*;
@@ -27,13 +28,13 @@ public class CommandExecutor implements Runnable {
             // successful completion
         } catch (ExecutionException e) {
             e.printStackTrace();
-            consumer.simpleResponse("ERROR: execution failed!");
+            consumer.receiveResponse(new CommandResponse("ERROR: execution failed!"));
         } catch (InterruptedException e) {
             e.printStackTrace();
-            consumer.simpleResponse("ERROR: operation interrupted!");
+            consumer.receiveResponse(new CommandResponse("ERROR: operation interrupted!"));
         } catch (TimeoutException e) {
             future.cancel(true);
-            consumer.simpleResponse("ERROR: Command operation timed out!");
+            consumer.receiveResponse(new CommandResponse("ERROR: Command operation timed out!"));
         }
         executor.shutdown();
     }

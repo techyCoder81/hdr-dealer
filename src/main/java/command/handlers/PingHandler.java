@@ -1,5 +1,6 @@
 package command.handlers;
 
+import response.CommandResponse;
 import response.ResponseConsumer;
 
 public class PingHandler extends CommandHandler {
@@ -11,7 +12,7 @@ public class PingHandler extends CommandHandler {
     @Override
     public void handle(String[] arguments, ResponseConsumer consumer) {
         // arguments dont matter lol its a ping
-        consumer.simpleResponse("PONG!");
+        consumer.receiveResponse(new CommandResponse("PONG!"));
         
     }
 

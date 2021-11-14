@@ -1,6 +1,7 @@
 package response;
 
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.io.File;
 import java.util.Collection;
@@ -13,22 +14,28 @@ public class ChannelConsumer implements ResponseConsumer {
         this.destinationChannel = destinationChannel;
     }
 
+    /**
+     * handle the response object
+     * @param response a <code>CommandResponse</code> object containing data for the message
+     */
     @Override
-    public synchronized void simpleResponse(String response) {
-        destinationChannel.sendMessage(response).queue();
-        
-    }
+    public void receiveResponse(CommandResponse response) {
+        if (response == null) {
+            destinationChannel.sendMessage("Response was null!");
+            System.out.println("ERROR: response was null!");
+        }
+        String rawText = response.toSimpleText();
+        MessageAction message;
+        if (rawText != null && !rawText.contentEquals("")) {
+            message = destinationChannel.sendMessage(rawText);
+        } else {
+            message = destinationChannel.sendMessage("[No description given]");
+        }
 
-    @Override
-    public synchronized void pagedResponse(String description, Collection<String> data) {
-        // TODO build response paging mechanism using an ExecutorService + Future<?>
-        destinationChannel.sendMessage(description).queue();
-        data.forEach(str -> destinationChannel.sendMessage(str).queue());
+        File file = response.getFile();
+        if (file != null && file.exists()) {
+            message.addFile(file);
+        }
+        message.queue();
     }
-
-    @Override
-    public synchronized void fileResponse(String description, File file) {
-        destinationChannel.sendMessage(description).addFile(file).queue();
-    }
-
 }

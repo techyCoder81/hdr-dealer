@@ -1,6 +1,7 @@
 package command.handlers;
 
 import command.CommandEnum;
+import response.CommandResponse;
 import response.ResponseConsumer;
 
 import java.util.Arrays;
@@ -9,7 +10,7 @@ public class HelpHandler extends CommandHandler {
     @Override
     public void handle(String[] args, ResponseConsumer consumer) {
         if (args.length == 0) {
-            consumer.simpleResponse("ERROR: empty command!");
+            consumer.receiveResponse(new CommandResponse("ERROR: empty command!"));
             return;
         }
 
@@ -17,7 +18,7 @@ public class HelpHandler extends CommandHandler {
             StringBuilder builder = new StringBuilder();
             builder.append("ERROR: HelpHandler called for non-help command! Command given: \n");
             Arrays.stream(args).forEach(argument -> builder.append(argument + ' '));
-            consumer.simpleResponse(builder.toString());
+            consumer.receiveResponse(new CommandResponse(builder.toString()));
             return;
         }
 
@@ -28,10 +29,10 @@ public class HelpHandler extends CommandHandler {
 
             HandlerFactory factory = new HandlerFactory();
             String helpStr = factory.getHandler(subcommand).getHelp();
-            consumer.simpleResponse(helpStr);
+            consumer.receiveResponse(new CommandResponse(helpStr));
         } else {
             // display generic help data
-            consumer.simpleResponse(getHelp());
+            consumer.receiveResponse(new CommandResponse(getHelp()));
         }
         return;
     }

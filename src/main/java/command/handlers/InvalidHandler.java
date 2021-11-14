@@ -1,5 +1,6 @@
 package command.handlers;
 
+import response.CommandResponse;
 import response.ResponseConsumer;
 
 public class InvalidHandler extends CommandHandler {
@@ -10,7 +11,7 @@ public class InvalidHandler extends CommandHandler {
 
     @Override
     public void handle(String[] arguments, ResponseConsumer consumer) {
-        consumer.simpleResponse("Invalid Command!");
+        consumer.receiveResponse(new CommandResponse("Invalid Command!"));
     }
 
     @Override
