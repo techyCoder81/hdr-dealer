@@ -1,6 +1,7 @@
 package command.handlers;
 
 import command.CommandEnum;
+import command.HandlerFactory;
 import response.CommandResponse;
 import response.ResponseConsumer;
 
@@ -44,7 +45,6 @@ public class HelpHandler extends CommandHandler {
         Arrays.stream(CommandEnum.values()).forEach(
             value -> {
                 if (value != CommandEnum.HELP && value != CommandEnum.INVALID) {
-                    HandlerFactory factory = new HandlerFactory();
                     builder.append("- " + value.toString() + "\n");
                 }
             }

@@ -7,6 +7,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import response.ChannelConsumer;
 
+/**
+ * this is a discord client which also produces commands
+ */
 public class DiscordClient extends ListenerAdapter implements CommandProducer {
     CommandEngine engine;
 
@@ -28,6 +31,8 @@ public class DiscordClient extends ListenerAdapter implements CommandProducer {
         }
     }
     
+    /** called by the internal discord client event handling anytime 
+     * ANY message gets sent. logic here should be efficient */
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
 

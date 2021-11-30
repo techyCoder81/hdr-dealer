@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 public class TerminalClient implements Runnable, CommandProducer {
     CommandEngine engine;
 
+    /** private default constructor */
+    @SuppressWarnings("unused")
     private TerminalClient(){}
 
     public TerminalClient(CommandEngine engine) {
@@ -29,17 +31,17 @@ public class TerminalClient implements Runnable, CommandProducer {
             System.out.println("No engine was supplied to TerminalClient!");
             return;
         }
-        // Enter data using BufferReader
+        // Enter data from terminal
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(System.in));
 
         while (true) {
             try {
-                // Reading data using readLine
+                // read data from terminal
                 String command = reader.readLine().trim();
 
-                TerminalConsumer consumer = new TerminalConsumer();
-                engine.schedule(command, consumer);
+                // schedule the command using the terminal singleton
+                engine.schedule(command, TerminalConsumer.singleton());
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }

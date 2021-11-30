@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.io.File;
-import java.util.Collection;
 
 public class ChannelConsumer implements ResponseConsumer {
 

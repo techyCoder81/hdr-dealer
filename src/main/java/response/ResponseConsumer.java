@@ -1,7 +1,5 @@
 package response;
 
-import java.io.File;
-import java.util.Collection;
 
 public interface ResponseConsumer {
     /**
