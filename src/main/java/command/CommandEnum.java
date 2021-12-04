@@ -13,7 +13,8 @@ public enum CommandEnum{
     HELP("help", HelpHandler.class),
     CRY("cry", CryHandler.class),
     INVALID("invalid", InvalidHandler.class),
-    MAKEIT("makeit", MakeItHandler.class);
+    MAKEIT("makeit", MakeItHandler.class),
+    PAGEDTEST("pagedtest", PagedTestHandler.class);
 
 
     String command;

@@ -1,9 +1,14 @@
 package client;
 
+import client.discord.PageListener;
 import command.CommandProducer;
 import engine.CommandEngine;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageReaction;
+import net.dv8tion.jda.api.entities.MessageReaction.ReactionEmote;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import response.ChannelConsumer;
 
@@ -12,6 +17,7 @@ import response.ChannelConsumer;
  */
 public class DiscordClient extends ListenerAdapter implements CommandProducer {
     CommandEngine engine;
+    PageListener pageListener = new PageListener();
 
     public DiscordClient(String token, CommandEngine engine) {   
         this(token);
@@ -29,6 +35,7 @@ public class DiscordClient extends ListenerAdapter implements CommandProducer {
             System.out.println(e.getMessage());
             return;
         }
+
     }
     
     /** called by the internal discord client event handling anytime 
@@ -45,7 +52,7 @@ public class DiscordClient extends ListenerAdapter implements CommandProducer {
         if (text.startsWith("$")) {
 
             //event.getChannel().sendMessage("Pong!").queue();
-            ChannelConsumer responseConsumer = new ChannelConsumer(event.getChannel());
+            ChannelConsumer responseConsumer = new ChannelConsumer(event.getChannel(), pageListener);
             if (engine != null) {
                 engine.schedule(text.substring(1), responseConsumer);
             } else {
@@ -57,6 +64,17 @@ public class DiscordClient extends ListenerAdapter implements CommandProducer {
     @Override
     public void setCommandEngine(CommandEngine engine) {
         this.engine = engine;
+        
+    }
+
+    @Override
+    public void onMessageReactionAdd(MessageReactionAddEvent event) {
+
+        Long messageId = event.getMessageIdLong();
+
+        if (!event.getUser().isBot() && pageListener.isListeningForReactions(messageId)) {
+            pageListener.handleReaction(messageId, event);
+        }
         
     }
 
