@@ -15,7 +15,8 @@ public enum CommandEnum{
     INVALID("invalid", InvalidHandler.class),
     MAKEIT("makeit", MakeItHandler.class),
     PAGEDTEST("pagedtest", PagedTestHandler.class),
-    SEARCH("search", SearchHandler.class);
+    SEARCH("search", SearchHandler.class),
+    ARCSEARCH("arcsearch", ArcNameHandler.class);
 
     String command;
     Class<?> handler;

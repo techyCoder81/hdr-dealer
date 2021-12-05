@@ -18,8 +18,6 @@ public class SearchHandler extends CommandHandler {
         return new String[] {
             "consts.txt",
             "custom_hashes.txt",
-            "Hashes_FullPath.txt",
-            "Hashes.txt",
             "Labels.txt",
             "ParamLabels.csv",
             "sqb-Labels.txt"
@@ -28,12 +26,20 @@ public class SearchHandler extends CommandHandler {
     
     private static HashSet<String> searchables = null;
 
+    protected HashSet<String> getSearchables() {
+        return searchables;
+    }
+
+    protected void setSearchables(HashSet<String> searchables) {
+        this.searchables = searchables;
+    }
+
     private synchronized void loadFiles() {
-        if (searchables != null) {
+        if (getSearchables() != null) {
             return;
         }
 
-        searchables = new HashSet<String>();
+        setSearchables(new HashSet<String>());
         
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         for (String fileName : getSearchableFiles()) {
@@ -42,7 +48,7 @@ public class SearchHandler extends CommandHandler {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                 while (reader.ready()) {
                     String line = reader.readLine();
-                    searchables.add(line);
+                    getSearchables().add(line);
                 }
             } catch (Exception e) {
                 System.out.println("Error while reading file: " + fileName + "\nReason: " + e.getMessage());
@@ -55,7 +61,7 @@ public class SearchHandler extends CommandHandler {
     @Override
     public void handle(String[] arguments, ResponseConsumer consumer) {
         
-        if (searchables == null) {
+        if (getSearchables() == null) {
             loadFiles();
         }
 
@@ -67,7 +73,7 @@ public class SearchHandler extends CommandHandler {
             );
         }
         
-        Stream<String> results = searchables.stream().filter(
+        Stream<String> results = getSearchables().stream().filter(
             entry -> StringMatch.wildcard(entry, arguments[1]) == true
         );
         List<String> resultsList = results.collect(Collectors.toList());
