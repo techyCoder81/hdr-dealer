@@ -49,6 +49,7 @@ public class PagedMessage {
       // if not enough space in current page, start a new page
       if (available - line.length() < 0 || lineCount >= MAX_LINES) {
         available = pageSpace;
+        pageBuilder.append("------------------------------\n\n\nUse arrows to change pages.");
         dataPages.add(pageBuilder.toString());
         pageBuilder = new StringBuilder();
         lineCount = 0;
@@ -58,6 +59,7 @@ public class PagedMessage {
       ++lineCount;
 
     }
+    pageBuilder.append("------------------------------\n\n\nUse arrows to change pages.");
     dataPages.add(pageBuilder.toString());
 
 
@@ -86,12 +88,14 @@ public class PagedMessage {
         updatePage();
       }
       lastUpdatedTime = System.currentTimeMillis();
+      discordMessage.removeReaction(LEFT_ARROW, event.getUser()).queue();
     } else if (reactionString.contentEquals("RE:" + RIGHT_ARROW)) {
       if (pageIndex < dataPages.size() - 1) {
         pageIndex++;
         updatePage();
       }
       lastUpdatedTime = System.currentTimeMillis();
+      discordMessage.removeReaction(RIGHT_ARROW, event.getUser()).queue();
     }
 
 
@@ -107,10 +111,11 @@ public class PagedMessage {
 
     // send the edited message
     // clear and add reactions
-    discordMessage.clearReactions()
-            .and(discordMessage.addReaction(LEFT_ARROW))
-            .and(discordMessage.addReaction(RIGHT_ARROW))
-            .and(discordMessage.editMessage(updateBuilder.toString()))
+    //discordMessage.clearReactions()
+    //        .and(discordMessage.addReaction(LEFT_ARROW))
+    //        .and(discordMessage.addReaction(RIGHT_ARROW))
+    //        .and(
+                    discordMessage.editMessage(updateBuilder.toString())//)
             .complete();
   }
 

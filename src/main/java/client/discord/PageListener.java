@@ -55,7 +55,6 @@ public class PageListener {
     PagedMessage message = messages.get(messageId);
     if (message != null) {
       message.handleReaction(event);
-
     }
   }
 
