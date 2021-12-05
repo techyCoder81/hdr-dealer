@@ -1,6 +1,7 @@
 package response;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,6 +50,20 @@ public class CommandResponse {
      */
     public void setData(List<String> data) {
         this.data = data;
+    }
+
+    /**
+     * set the list form data of the response. This may be a
+     * pageable list of information or values, or any other
+     * form of String[].
+     */
+    public void setData(String[] data) {
+        ArrayList<String> list = new ArrayList<String>(data.length);
+
+        for (String str : data) {
+            list.add(str);
+        }
+        this.data = list;
     }
 
     /**

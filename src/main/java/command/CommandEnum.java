@@ -14,8 +14,8 @@ public enum CommandEnum{
     CRY("cry", CryHandler.class),
     INVALID("invalid", InvalidHandler.class),
     MAKEIT("makeit", MakeItHandler.class),
-    PAGEDTEST("pagedtest", PagedTestHandler.class);
-
+    PAGEDTEST("pagedtest", PagedTestHandler.class),
+    SEARCH("search", SearchHandler.class);
 
     String command;
     Class<?> handler;

@@ -45,29 +45,44 @@ public class PagedMessage {
     int available = pageSpace;
     StringBuilder pageBuilder = new StringBuilder();
     int lineCount = 0;
+    int totalLineCount = 0;
+    pageBuilder.append("```");
+
     for (String line : data) {
       // if not enough space in current page, start a new page
-      if (available - line.length() < 0 || lineCount >= MAX_LINES) {
+      if (available - line.length() < 75 || lineCount >= MAX_LINES) {
         available = pageSpace;
-        pageBuilder.append("------------------------------\n\n\nUse arrows to change pages.");
+        pageBuilder.append("```------------------------------\n\n"
+          + "Showing entries `" + totalLineCount + "` - `" + (totalLineCount + lineCount) + "`\n"
+          + "Page: `" + dataPages.size() + "` of $page_count123. Use arrows to change pages.");
         dataPages.add(pageBuilder.toString());
         pageBuilder = new StringBuilder();
+        pageBuilder.append("```");
+        totalLineCount += lineCount;
         lineCount = 0;
       }
 
-      pageBuilder.append("`" + line + "`\n");
+      pageBuilder.append(line + "\n");
       ++lineCount;
 
     }
-    pageBuilder.append("------------------------------\n\n\nUse arrows to change pages.");
+    // finish the final page
+    pageBuilder.append("```------------------------------\n\n"
+          + "Showing entries `" + totalLineCount + "` - `" + (totalLineCount + lineCount) + "`\n"
+          + "Page: `" + dataPages.size() + "` of $page_count123. Use arrows to change pages.");
     dataPages.add(pageBuilder.toString());
 
-
+    
+    // replace all page count placeholders with the actual page count
+    ArrayList<String> tempPages = new ArrayList<String>();
+    dataPages.forEach(entry -> tempPages.add(entry.replace("$page_count123", '`' + Integer.toString(dataPages.size() - 1) + '`')));
+    dataPages = tempPages;
 
     if (dataPages.size() > 0) {
       updatePage();
     }
 
+    // clear reactions, and add the arrows.
     discordMessage.clearReactions()
             .and(discordMessage.addReaction(LEFT_ARROW))
             .and(discordMessage.addReaction(RIGHT_ARROW)).queue();
@@ -109,18 +124,14 @@ public class PagedMessage {
     }
     updateBuilder.append(dataPages.get(pageIndex));
 
-    // send the edited message
-    // clear and add reactions
-    //discordMessage.clearReactions()
-    //        .and(discordMessage.addReaction(LEFT_ARROW))
-    //        .and(discordMessage.addReaction(RIGHT_ARROW))
-    //        .and(
-                    discordMessage.editMessage(updateBuilder.toString())//)
-            .complete();
+    
+    discordMessage.editMessage(updateBuilder.toString()).complete();
   }
 
   public Message getDiscordMessage() {
     return discordMessage;
   }
+
+ 
 
 }

@@ -47,7 +47,7 @@ public class CommandExecutor implements Runnable {
             future.cancel(true);
             consumer.receiveResponse(new CommandResponse("ERROR: Command operation timed out!"));
         }
-        executor.shutdown();
+        executor.shutdownNow();
     }
 
     /**
