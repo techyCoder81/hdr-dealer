@@ -2,8 +2,6 @@ import client.DiscordClient;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-import client.TerminalClient;
-import engine.CommandEngine;
 
 public class Main {
     public static void main(String[] args) {
@@ -33,9 +31,6 @@ public class Main {
             return;
         }
 
-        CommandEngine engine = new CommandEngine();
-
-        new DiscordClient(token, engine);
-        new TerminalClient(engine);
+        new DiscordClient(token);
     }
 }

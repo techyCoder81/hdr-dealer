@@ -1,9 +1,6 @@
 package command;
-
-import command.handlers.*;
-import command.handlers.search.ArcNameHandler;
-import command.handlers.search.HashHandler;
-import command.handlers.search.SearchHandler;
+import handler.*;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 /**
  * this enum controls what text commands should be handled by
@@ -12,15 +9,7 @@ import command.handlers.search.SearchHandler;
  */
 public enum CommandEnum{
     PING("ping", PingHandler.class),
-    LOOPBACK("loopback", LoopbackHandler.class),
-    HELP("help", HelpHandler.class),
-    CRY("cry", CryHandler.class),
-    INVALID("invalid", InvalidHandler.class),
-    MAKEIT("makeit", MakeItHandler.class),
-    PAGEDTEST("pagedtest", PagedTestHandler.class),
-    SEARCH("search", SearchHandler.class),
-    ARCSEARCH("arcsearch", ArcNameHandler.class),
-    HASH("hash", HashHandler.class);
+    LOOPBACK("loopback", LoopbackHandler.class);
 
     String command;
     Class<?> handler;
@@ -38,10 +27,35 @@ public enum CommandEnum{
         return handler;
     }
 
+    public AbstractHandler getNewInstance() {
+        try {
+            return (AbstractHandler) handler.getConstructor().newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public CommandData getCommandData() {
+        try {
+            AbstractHandler theHandler = getNewInstance();
+            if (theHandler == null) {
+                System.out.println("instances for this enum was null!\n" + this.toString());
+                return null;
+            }
+            return theHandler.getCommandData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
     /**
      * gets the correct CommandEnum entry from the given string.
      * @param str string name, such as 'loopback', 'makeit', or 'help'
      * @return the corresponding enum entry
+     * @throws IllegalArgumentException if the given string does not correspond with any values
      */
     public static CommandEnum fromString(String str) {
         for (CommandEnum entry : CommandEnum.values()) {
@@ -49,7 +63,7 @@ public enum CommandEnum{
                 return entry;
             }
         }
-        return INVALID;
+        throw new IllegalArgumentException("Given string " + str + " is not a valid command.");
     }
 
 }
