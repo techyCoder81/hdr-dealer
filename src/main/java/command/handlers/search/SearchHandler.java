@@ -1,4 +1,4 @@
-package command.handlers;
+package command.handlers.search;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import command.handlers.CommandHandler;
 import response.CommandResponse;
 import response.ResponseConsumer;
 import util.StringMatch;
@@ -24,7 +25,7 @@ public class SearchHandler extends CommandHandler {
         };
     }
     
-    private static HashSet<String> searchables = null;
+    protected HashSet<String> searchables = null;
 
     protected HashSet<String> getSearchables() {
         return searchables;
@@ -32,6 +33,10 @@ public class SearchHandler extends CommandHandler {
 
     protected void setSearchables(HashSet<String> searchables) {
         this.searchables = searchables;
+    }
+
+    protected void addValue(String line) {
+        searchables.add(line);
     }
 
     private synchronized void loadFiles() {
@@ -48,7 +53,7 @@ public class SearchHandler extends CommandHandler {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                 while (reader.ready()) {
                     String line = reader.readLine();
-                    getSearchables().add(line);
+                    addValue(line);
                 }
             } catch (Exception e) {
                 System.out.println("Error while reading file: " + fileName + "\nReason: " + e.getMessage());
@@ -59,8 +64,10 @@ public class SearchHandler extends CommandHandler {
     }
 
     @Override
-    public void handle(String[] arguments, ResponseConsumer consumer) {
-        
+    public void handle(String[] arguments1, ResponseConsumer consumer) {
+        String[] arguments = preprocess(arguments1);
+
+
         if (getSearchables() == null) {
             loadFiles();
         }
@@ -73,11 +80,34 @@ public class SearchHandler extends CommandHandler {
             );
         }
         
+        List<String> resultsList = getResults(arguments);        
+
+        createResponse(arguments, resultsList, consumer);
+        
+    }
+
+    protected void createResponse(String[] arguments, List<String> results, ResponseConsumer consumer) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 1; i < arguments.length; ++i) {
+            builder.append(' ' + arguments[i]);
+        }
+
+        CommandResponse response = new CommandResponse();
+
+        response.setData(results);
+        response.setDescription("Found `" + response.getData().size() + "` search results for: `" + builder.toString().trim() + '`');
+
+        consumer.receiveResponse(response);
+    }
+
+    protected List<String> getResults(String[] arguments) {
+        // get all of the matching strings for the first arg
         Stream<String> results = getSearchables().stream().filter(
             entry -> StringMatch.wildcard(entry, arguments[1]) == true
         );
         List<String> resultsList = results.collect(Collectors.toList());
         
+        // filter further with each further argument
         int index = 2;
         while (index < arguments.length) {
             int currentIndex = index;
@@ -87,18 +117,7 @@ public class SearchHandler extends CommandHandler {
             index++;
         }
         
-        StringBuilder builder = new StringBuilder();
-        for (int i = 1; i < arguments.length; ++i) {
-            builder.append(' ' + arguments[i]);
-        }
-
-        CommandResponse response = new CommandResponse();
-
-        response.setData(resultsList);
-        response.setDescription("Found `" + response.getData().size() + "` search results for: `" + builder.toString().trim() + '`');
-
-        consumer.receiveResponse(response);
-        
+        return resultsList;
     }
 
     @Override

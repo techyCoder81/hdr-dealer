@@ -1,6 +1,9 @@
 package command;
 
 import command.handlers.*;
+import command.handlers.search.ArcNameHandler;
+import command.handlers.search.HashHandler;
+import command.handlers.search.SearchHandler;
 
 /**
  * this enum controls what text commands should be handled by
@@ -16,7 +19,8 @@ public enum CommandEnum{
     MAKEIT("makeit", MakeItHandler.class),
     PAGEDTEST("pagedtest", PagedTestHandler.class),
     SEARCH("search", SearchHandler.class),
-    ARCSEARCH("arcsearch", ArcNameHandler.class);
+    ARCSEARCH("arcsearch", ArcNameHandler.class),
+    HASH("hash", HashHandler.class);
 
     String command;
     Class<?> handler;

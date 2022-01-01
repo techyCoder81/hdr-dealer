@@ -18,4 +18,9 @@ public abstract class CommandHandler {
 
     /** returns a help string for the command */
     public abstract String getHelp();
+
+    /** preprocess the given arguments, if necessary */
+    public String[] preprocess(String[] arguments) {
+        return arguments;
+    }
 }

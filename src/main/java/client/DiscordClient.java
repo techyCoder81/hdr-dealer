@@ -1,15 +1,20 @@
 package client;
 
 import client.discord.PageListener;
+import command.CommandEnum;
 import command.CommandProducer;
+import command.HandlerFactory;
 import engine.CommandEngine;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageReaction;
-import net.dv8tion.jda.api.entities.MessageReaction.ReactionEmote;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import response.ChannelConsumer;
 
 /**
@@ -28,7 +33,17 @@ public class DiscordClient extends ListenerAdapter implements CommandProducer {
         JDABuilder builder = JDABuilder.createDefault(token);
         builder.addEventListeners(this);
         try {
-            builder.build();
+            JDA jda = builder.build();
+            jda.awaitReady();
+            HandlerFactory factory = new HandlerFactory();
+            for (CommandEnum command : CommandEnum.values()) {
+                // command.toString(), factory.getHandler(command).getHelp()).queue()
+                CommandData data = new CommandData(command.toString(), command.toString());
+                data.addOption(OptionType.STRING, "arguments", "command arguments");
+                jda.upsertCommand(data).queue();
+                Guild guild = jda.getGuildById("697248604905144363");
+                guild.upsertCommand(data).queue();
+            }
         } catch (Exception e) {
             System.out.println("exception while building jda!");
             System.out.println("token was: '" + token + "'");
@@ -36,6 +51,27 @@ public class DiscordClient extends ListenerAdapter implements CommandProducer {
             return;
         }
 
+    }
+
+    @Override
+    public void onSlashCommand(SlashCommandEvent event) {
+        if (event.getUser().isBot()) {
+            return;
+        }
+
+        //event.getChannel().sendMessage("Pong!").queue();
+        ChannelConsumer responseConsumer = new ChannelConsumer(event.getChannel(), pageListener);
+        if (engine != null) {
+            OptionMapping mapping = event.getOption("arguments");
+            if (mapping != null) {
+                engine.schedule(event.getName() + " " + mapping.getAsString(), responseConsumer);
+            } else {
+                engine.schedule(event.getName(), responseConsumer);
+            }
+        } else {
+            event.getChannel().sendMessage("ERROR: Engine was null for discordclient.").queue();
+        }
+        event.reply("command received");
     }
     
     /** called by the internal discord client event handling anytime 
